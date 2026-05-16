@@ -168,7 +168,6 @@ def get_years_covered(tckr: str):
         return []
 
 
-
 def get_sp500_tickers():
     url = 'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies'
     table = pd.read_html(url)

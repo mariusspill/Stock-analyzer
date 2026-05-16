@@ -5,7 +5,11 @@ import os
 def cache_market_caps(tickers: list[str]):
     mcaps = dict()
     for ticker in tickers:
-        mcaps[ticker] = yf.Ticker(ticker).info["marketCap"]
+        try:
+            mcaps[ticker] = yf.Ticker(ticker).info["marketCap"]
+        except:
+            print(ticker)
+
     os.remove("./caching/market_caps.json")
     with open("./caching/market_caps.json", "w") as f:
         json.dump(mcaps, f)

@@ -12,7 +12,6 @@ tckrs = tickers.getTickers("./helpers/list.txt")
 
 def daily_fetch():
     ava.fetch_data()
-    sql.fetch_sp500_from_alpha_advantage()
 
 
 def daily_cache():
@@ -20,11 +19,8 @@ def daily_cache():
 
 
 def mainFunction():
-    # dt.shared.set_list(ascreen.Screening_as_dict(ascreen.list_of_stocks(tckrs)))
-    # daily_fetch()
-    # daily_cache()
-    print(ascreen.list_of_stocks(tckrs, 1990)["JNJ"].average_income_growth)
-    
+    daily_fetch()
+    daily_cache()    
 
 if __name__ == "__main__":
     t1 = threading.Thread(target=wm.runFlask)

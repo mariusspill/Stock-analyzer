@@ -5,6 +5,10 @@ Module to store and retrieve data from DB
 import mysql.connector as sqlc
 import apis.alphavantagedata as dt
 import yfinance as yf
+import pandas as pd
+
+pd.set_option('display.max_rows', None)
+
 
 
 connection = sqlc.connect(
@@ -31,6 +35,46 @@ def add_entry_company_identifiers(id: int, ticker: str, isin: str, wkn: str):
     id: company_id from abstract table, isin: isin, wkn: german Wertpapierkennnummer
     """
     cursor.execute(f"INSERT INTO company_identifiers (company_id, ticker, isin, wkn) VALUES ({id}, '{ticker}', '{isin}', '{wkn}');")
+    connection.commit()
+
+
+def add_entry_balance_sheets(company_id: int, year: int, type: str, total_assets: int = None, total_current_assets: int = None, cash: int = None, receivables: int = None,
+                             inventories: int = None, ppn: int = None, intangibles: int = None, total_liabilities_equity: int = None, short_debt: int = None, long_debt: int = None,
+                             total_debt: int = None, total_liabilities: int = None, total_equity: int = None, retained_earnings: int = None, total_shares: int = None,
+                             treasury_shares: int = None, shares_outstanding: int = None):
+    """
+    Add a new entry to balance_sheets database table
+    """
+
+    sql = """INSERT INTO balance_sheets (company_id, year, type, total_assets, total_current_assets, cash, receivables, 
+                inventories, properties_plant_equipment, intangible_assets, total_liabilities_and_equity, 
+                short_debt, long_debt, total_debt, total_liabilities, total_equity, retained_earnings, 
+                total_shares, treasury_shares, shares_outstanding) VALUES 
+                (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+    
+    params = (
+        company_id,
+        year,
+        type,
+        total_assets,
+        total_current_assets,
+        cash,
+        receivables,
+        inventories,
+        ppn,
+        intangibles,
+        total_liabilities_equity,
+        short_debt,
+        long_debt,
+        total_debt,
+        total_liabilities,
+        total_equity,
+        retained_earnings,
+        total_shares,
+        treasury_shares,
+        shares_outstanding
+    )
+    cursor.execute(sql, params)
     connection.commit()
 
 
@@ -96,6 +140,53 @@ def get_id_by_ticker(ticker: int):
         return cursor.fetchall()[0][0]
     except:
         return "No data for company"
+    
+
+def automate_data_insertion_balance_sheet(ticker: str, year: int = 2024):
+    company_id = get_id_by_ticker(ticker)
+
+    if isinstance(company_id, int) and ticker is not None:
+        cursor.execute(f"""SELECT company.id, company_identifiers.ticker, balance_sheets.*
+                    FROM Company INNER JOIN Company_Identifiers ON Company.id = Company_Identifiers.company_id
+                    INNER JOIN balance_sheets ON company.id = balance_sheets.company_id
+                    WHERE company_identifiers.ticker = '{ticker}' AND balance_sheets.year = {year};""")
+        data = cursor.fetchall()
+
+        balance_sheet = yf.Ticker(ticker).balancesheet.iloc[:, 0]
+        year = int(str(balance_sheet.name)[:4])
+        print(balance_sheet)
+
+        if data == []:
+            print("I would insert")
+            """
+            sql.add_entry_balance_sheets(
+                company_id,
+                year,
+                "annual",
+                4002814000000,
+                2179723000000,
+                23372000000,
+                101223000000,
+                0,
+                32223000000,
+                64560000000,
+                4002814000000,
+                52893000000,
+                401418000000,
+                454311000000,
+                3658056000000,
+                344758000000,
+                376166000000,
+                4104933895,
+                1307313494,
+                2797620401
+            )
+            """
+        else:
+            if data[0][21] == 1:
+                print("record checked handly")
+            else:
+                print("update possible")
 
 
 
