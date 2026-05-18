@@ -1,17 +1,14 @@
 import helpers.tickers as tickers
 import apis.alphavantagapi as ava
-import analysis.analysis_screening as ascreen
-import databases.sqlConnection as sql
-import helpers.tickers as helpers
 import caching.caching as cch
 import webinterface.webmain as wm
 import threading
-import webinterface.data_transfer as dt
+from repository.financial_data_repo import fetch_data
 
 tckrs = tickers.getTickers("./helpers/list.txt")
 
 def daily_fetch():
-    ava.fetch_data()
+    fetch_data()
 
 
 def daily_cache():
