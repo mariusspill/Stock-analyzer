@@ -1,9 +1,12 @@
 import requests
+import os
 from datetime import datetime
+from dotenv import load_dotenv
 
 date = datetime.today().strftime('%Y-%m-%d')
-APIKEY = "54TJ9WUBHV8UU83V"
 
+load_dotenv()
+APIKEY = os.getenv("ALPHAVANTAGE_API_KEY")
 
 def get_testData(function: str) -> dict:
     url = "https://www.alphavantage.co/query"

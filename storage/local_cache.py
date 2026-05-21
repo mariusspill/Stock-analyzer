@@ -49,6 +49,7 @@ def update_file(ticker: str, type: str) -> bool:
 
 def save_json_raw(ticker: str, data: dict, type: str):
     if "Note" in data.keys() or "Information" in data.keys() or "False" in data.keys():
+        print("API key limit reached: " + ticker)
         return 0
 
     result = 1

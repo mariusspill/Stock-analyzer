@@ -8,11 +8,11 @@ def fetch_data():
 
     for ticker in tckrs:
         if not update_file(ticker, 'incomeStatement'):
-            print(ticker)
+            print("Skip because current: " + ticker)
             continue
 
         data = get_financial_data(ticker, "INCOME_STATEMENT")
-        print(data)
+        print("Fetch new json: " + ticker)
         result = save_json_raw(ticker, data, "incomeStatement")
 
         if result == 1:
