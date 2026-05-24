@@ -48,11 +48,19 @@ def update_file(ticker: str, type: str) -> bool:
 
 
 def save_json_raw(ticker: str, data: dict, type: str):
+    # Test if no real data and analyze the reason
+    note_msg = data.get("Note", "")
+    info_msg = data.get("Information", "")
     if "Note" in data.keys() or "Information" in data.keys() or "False" in data.keys():
-        print("API key limit reached: " + ticker)
-        return 0
+        if "We have detected" in note_msg or "We have detected" in info_msg:
+            print("API key limit reached: " + ticker)
+        elif "1 request per second" in note_msg or "1 request per second" in info_msg:
+            print("Speed limit warning received, ticker skipped: " + ticker)
+        # Return 1 to signal no json was fetched
+        return 1
 
-    result = 1
+    # Real data / json received
+    result = 0
 
     TICKER_DATA_PATH = RAW_DATA_PATH + ticker
 
@@ -61,8 +69,7 @@ def save_json_raw(ticker: str, data: dict, type: str):
 
     search_pattern = os.path.join(TICKER_DATA_PATH, f"*{type}*")
     for old_file in glob.glob(search_pattern):
-        result = 0
-        os.remove(old_file)
+            os.remove(old_file)
 
     filepath = TICKER_DATA_PATH + "\\" + ticker + "_" + type + "_" + date + ".json"
 
@@ -70,3 +77,31 @@ def save_json_raw(ticker: str, data: dict, type: str):
         file.write(json.dumps(data))
     
     return result
+
+
+def read_json_raw(ticker: str, type: str, annual: bool = True) -> dict:
+    """
+    Returns a json object
+    """
+
+    TICKER_DATA_PATH = RAW_DATA_PATH + ticker
+
+    if not os.path.exists(TICKER_DATA_PATH):
+        # Ticker doesn't exists in datalake
+        return {}
+    
+    search_pattern = os.path.join(TICKER_DATA_PATH, f"*{type}*")
+
+    matching_files = glob.glob(search_pattern)
+
+    if len(matching_files) > 0:
+        file_path = matching_files[0]
+    else:
+        # No files for that type
+        return {}
+
+    with open(file_path, "r") as file:
+        if annual:
+            return json.load(file)["annualReports"]
+        else:
+            return json.load(file)
