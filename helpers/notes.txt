@@ -1,5 +1,3 @@
 APO data from alphaadvantage is wrong (netIncome)
 
-DB Server Password: "OpenPassword123"
-
 Command balance_sheets:  INSERT INTO balance_sheets (   company_id, year, type, total_assets, total_current_assets, cash, receivables,   inventories, properties_plant_equipment, intangible_assets, total_liabilities_and_equity,   short_debt, long_debt, total_debt, total_liabilities, total_equity, retained_earnings,   total_shares, treasury_shares, shares_outstanding, checked ) VALUES (1, 2024, "annual", 137175000000, 34482000000, 13947000000, 14910000000, 1289000000, 5731000000, 71660000000, 137175000000, 5089000000, 49884000000, 54973000000, 109783000000, 27393000000, 151163000000, 2279164313, 132874243, 926290070, 1);
