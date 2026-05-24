@@ -1,4 +1,4 @@
-import sqlConnection as db
+import repository.sqlConnection as db
 
 def add(name: str):
     """

@@ -1,4 +1,4 @@
-import sqlConnection as db
+import repository.sqlConnection as db
 
 def add_entry_balance_sheets(company_id: int, year: int, type: str, total_assets: int = None, total_current_assets: int = None, cash: int = None, receivables: int = None,
                              inventories: int = None, ppn: int = None, intangibles: int = None, total_liabilities_equity: int = None, short_debt: int = None, long_debt: int = None,

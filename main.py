@@ -2,7 +2,7 @@ import helpers.tickers as tickers
 import caching.caching as cch
 import threading
 from pipelines.fundamentals_api_to_json import fetch_data
-import storage.local_cache as lc
+import pipelines.fundamentals_json_to_db as pfj
 
 tckrs = tickers.getTickers("./helpers/list.txt")
 
@@ -15,9 +15,9 @@ def daily_cache():
 
 
 def mainFunction():
-    daily_fetch()
-    daily_cache()
-    print(lc.read_json_raw("AEE", "incomeStatement"))
+    # daily_fetch()
+    # daily_cache()
+    pfj.pipeline()
 
 def frontend():
     pass
