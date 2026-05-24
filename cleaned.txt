@@ -1,0 +1,13 @@
+CLEAN:
+./apis/alphavantageapi.py
+./storage/*
+./pipelines/*
+
+NOT CLEAN:
+./analysis/*
+./apis/alphavantagedata.py
+./caching/*
+./machine_learning/*
+./repostory/*                       -> Folder should only touch sql and be the only one that touches sql
+./webinterface/*
+
