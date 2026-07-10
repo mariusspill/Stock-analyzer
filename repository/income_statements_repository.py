@@ -21,7 +21,7 @@ def add_entry_income_statement(
         company_id,
         year,
         data['revenue'],
-        data['gross_profit'],
+        data['gross_profit'],   
         data['operating_income'],
         data['net_income'],
         data['EBIT'],
