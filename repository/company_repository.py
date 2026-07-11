@@ -10,6 +10,8 @@ def add(name: str):
 
 
 def get_company(company_id: int):
+    db.connection.commit()
+    
     sql = """
             SELECT * FROM company WHERE id = %s;
         """

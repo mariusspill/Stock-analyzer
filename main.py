@@ -12,7 +12,7 @@ tckrs = tickers.getTickers("./helpers/list.txt")
 sp500 = tickers.getTickers("./Data/Indices/s&p500.txt")
 
 logging.basicConfig(  
-    level=logging.DEBUG,
+    level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 
@@ -27,7 +27,7 @@ def daily_cache():
 
 
 def mainFunction():
-    # daily_fetch()
+    daily_fetch()
     # daily_cache()
     pfj.pipeline(sp500)
     pass

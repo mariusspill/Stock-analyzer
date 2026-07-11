@@ -23,6 +23,8 @@ def get_id_by_ticker(ticker: str):
     return result[0] if result else None
 
 def get_company_identifiers(company_id: int):
+    db.connection.commit()
+
     sql = """
             SELECT * FROM company_identifiers WHERE company_id = %s;
         """

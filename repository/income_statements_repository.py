@@ -37,6 +37,7 @@ def add_entry_income_statement(
 
 
 def get_income_statements(company_id: int):
+    db.connection.commit()
     sql = """
             SELECT * FROM income_statements WHERE company_id = %s;
         """
