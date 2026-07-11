@@ -1,3 +1,0 @@
-5321: represents financials of only Ahold (not Delhaize), both companies merged in 2016 (25, July), so there isnt a full year financials of the new company, just of ahold. That messes up data for future years. Recommendation: use 2017 and newer data
-4837: kenvue spinoff reduces revenue but not net income: backwards some data got adjusted. Recommendation: use adjusted or official data depending on model
-4: kyndryl spinoff reduces revenue but not net income: backwards some data got adjusted. Recommendation: use adjusted or official data depending on model

@@ -31,7 +31,7 @@ def pipeline(indices: list[str]):
                 
 
 def testing():
-    dic = lc.read_json_raw("", "incomeStatement")
+    dic = lc.read_json_raw("IBM", "incomeStatement")
     record = dic[0]
 
     data = {

@@ -3,4 +3,8 @@ Data/
 
 # Ignore virtual environment files
 .env
-venv/
+.venv/
+
+# Ignore pycaches
+__pycache__/
+*.pyc
