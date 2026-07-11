@@ -7,6 +7,8 @@ from storage.local_cache import update_file
 def fetch_data():
     tckrs = tickers.getTickers("./Data/Indices/s&p500.txt")
 
+    counter = 0
+
     for ticker in tckrs:
         if not update_file(ticker, 'incomeStatement'):
             print("Skip because data is up to date: " + ticker)
@@ -20,9 +22,13 @@ def fetch_data():
         time.sleep(1.5)
 
         if result == 0:
+            counter += 1
             with open("./helpers/list.txt", "a") as file:
                 text = "\n" + ticker
                 file.write(text)
         elif result == 1:
             # if no json was fetched terminate 
+            print(counter, 'calls have been made')
             return 1
+        
+        print(counter, 'calls have been made')

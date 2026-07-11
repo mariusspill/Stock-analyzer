@@ -19,3 +19,12 @@ def get_id_by_ticker(ticker: str):
     
     # Returns the integer (e.g. 14) or None if the stock isn't registered yet
     return result[0] if result else None
+
+def get_company_identifiers(company_id: int):
+    sql = """
+            SELECT * FROM company_identifiers WHERE company_id = %s;
+        """
+    
+    db.cursor.execute(sql, (company_id,))
+
+    return db.cursor.fetchall()

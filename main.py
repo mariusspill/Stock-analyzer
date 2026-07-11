@@ -3,6 +3,7 @@ import caching.caching as cch
 import threading
 from pipelines.fundamentals_api_to_json import fetch_data
 import pipelines.fundamentals_json_to_db as pfj
+import repository.balance_sheets_repository as isr
 
 tckrs = tickers.getTickers("./helpers/list.txt")
 sp500 = tickers.getTickers("./Data/Indices/s&p500.txt")
@@ -18,10 +19,11 @@ def daily_cache():
 def mainFunction():
     # daily_fetch()
     # daily_cache()
-    pfj.testing()
+    # pfj.testing()
+    pass
 
 def frontend():
-    pass
+    print(isr.get_balance_sheets(1))
 
 if __name__ == "__main__":
     t1 = threading.Thread(target=frontend)

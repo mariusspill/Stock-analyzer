@@ -34,3 +34,13 @@ def add_entry_income_statement(
 
     db.cursor.execute(sql, params)
     db.connection.commit()
+
+
+def get_income_statements(company_id: int):
+    sql = """
+            SELECT * FROM income_statements WHERE company_id = %s;
+        """
+    
+    db.cursor.execute(sql, (company_id,))
+
+    return db.cursor.fetchall()

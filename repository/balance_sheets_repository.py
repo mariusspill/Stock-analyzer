@@ -38,3 +38,12 @@ def add_entry_balance_sheets(company_id: int, year: int, type: str, total_assets
     )
     db.cursor.execute(sql, params)
     db.connection.commit()
+
+def get_balance_sheets(company_id: int):
+    sql = """
+            SELECT * FROM balance_sheets WHERE company_id = %s;
+        """
+    
+    db.cursor.execute(sql, (company_id,))
+
+    return db.cursor.fetchall()
