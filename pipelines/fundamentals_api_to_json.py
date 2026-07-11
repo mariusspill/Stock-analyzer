@@ -3,6 +3,10 @@ import time
 from storage.local_cache import save_json_raw
 from apis.alphavantagapi import get_financial_data
 from storage.local_cache import update_file
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 def fetch_data():
     tckrs = tickers.getTickers("./Data/Indices/s&p500.txt")
@@ -11,11 +15,11 @@ def fetch_data():
 
     for ticker in tckrs:
         if not update_file(ticker, 'incomeStatement'):
-            print("Skip because data is up to date: " + ticker)
+            logger.info("Skip because data is up to date: " + ticker)
             continue
 
         data = get_financial_data(ticker, "INCOME_STATEMENT")
-        print("Send out API request for: " + ticker)
+        logger.info("Send out API request for: " + ticker)
         result = save_json_raw(ticker, data, "incomeStatement")
 
         # AlphaVantage only allows one request every second - sleep to not outspeed rate
@@ -28,7 +32,7 @@ def fetch_data():
                 file.write(text)
         elif result == 1:
             # if no json was fetched terminate 
-            print(counter, 'calls have been made')
+            logger.info(f'{counter} calls have been made')
             return 1
         
-        print(counter, 'calls have been made')
+        logger.info(f'{counter} calls have been made')

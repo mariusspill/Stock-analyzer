@@ -2,12 +2,13 @@ import os
 import json
 import glob
 from datetime import datetime
+from pathlib import Path
 
 date = datetime.today().strftime('%Y-%m-%d')
 threshold_string = "2025-12-31"
 threshold_date = datetime.strptime(threshold_string, "%Y-%m-%d").date()
 
-RAW_DATA_PATH = "D:\\Data\\Programming\\GitHub\\StockScreener\\Data\\RawData\\"
+RAW_DATA_PATH = Path(__file__).resolve().parent.parent / "Data" / "RawData"
 
 
 def update_file(ticker: str, type: str) -> bool:
@@ -24,7 +25,7 @@ def update_file(ticker: str, type: str) -> bool:
     """
     update = False
 
-    TICKER_DATA_PATH = RAW_DATA_PATH + ticker
+    TICKER_DATA_PATH = RAW_DATA_PATH / ticker
 
     search_pattern = os.path.join(TICKER_DATA_PATH, f"*{type}*")
 
@@ -62,7 +63,7 @@ def save_json_raw(ticker: str, data: dict, type: str):
     # Real data / json received
     result = 0
 
-    TICKER_DATA_PATH = RAW_DATA_PATH + ticker
+    TICKER_DATA_PATH = RAW_DATA_PATH / ticker
 
     if not os.path.exists(TICKER_DATA_PATH):
         os.makedirs(TICKER_DATA_PATH)
@@ -71,7 +72,7 @@ def save_json_raw(ticker: str, data: dict, type: str):
     for old_file in glob.glob(search_pattern):
             os.remove(old_file)
 
-    filepath = TICKER_DATA_PATH + "\\" + ticker + "_" + type + "_" + date + ".json"
+    filepath = TICKER_DATA_PATH / f"{ticker}_{type}_{date}.json"
 
     with open(filepath, "w") as file:
         file.write(json.dumps(data))
@@ -84,7 +85,7 @@ def read_json_raw(ticker: str, type: str, annual: bool = True) -> dict:
     Returns a json object
     """
 
-    TICKER_DATA_PATH = RAW_DATA_PATH + ticker
+    TICKER_DATA_PATH = RAW_DATA_PATH / ticker
 
     if not os.path.exists(TICKER_DATA_PATH):
         # Ticker doesn't exists in datalake
@@ -102,6 +103,6 @@ def read_json_raw(ticker: str, type: str, annual: bool = True) -> dict:
 
     with open(file_path, "r") as file:
         if annual:
-            return json.load(file)["annualReports"]
+            return json.load(file).get("annualReports", {})
         else:
             return json.load(file)

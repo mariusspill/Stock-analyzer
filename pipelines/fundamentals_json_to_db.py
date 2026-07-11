@@ -3,6 +3,10 @@ import repository.company_identifiers_repository  as company_identifier
 import repository.income_statements_repository as income
 import repository.balance_sheets_repository as balance
 import storage.local_cache as lc
+import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 def pipeline(indices: list[str]):
 
@@ -10,24 +14,24 @@ def pipeline(indices: list[str]):
     for ticker in indices:
         comp_id = company_identifier.get_id_by_ticker(ticker)
         if comp_id is None:
-            print(f"⚠️ {ticker} cannot be processed. Reason: Registry ID missing.")
+            logger.warning(f"⚠️ {ticker} cannot be processed. Reason: Registry ID missing.")
             continue
         try:
             data = lc.read_json_raw(ticker, "incomeStatement")
-        except:
-            print(f"⚠️ {ticker} cannot be processed. Reason: read json failed")
+        except json.JSONDecodeError:
+            logger.warning(f"⚠️ {ticker} cannot be processed. Reason: read json failed")
             continue
 
         if data == {}:
-            print(f"⚠️ {ticker} cannot be processed. Reason: data dict empty.")
+            logger.warning(f"⚠️ {ticker} cannot be processed. Reason: data dict empty.")
             continue
 
         for record in data:
             year = int(record["fiscalDateEnding"][0:4])
             if income.exists(comp_id, year) == None:
-                print("add record for", ticker, " ", year)
+                logger.info(f"add record for {ticker} {year}")
             else:
-                print("record exists", ticker, " ", year)
+                logger.debug(f"record exists {ticker} {year}")
                 
 
 def testing():
