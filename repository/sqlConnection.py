@@ -7,7 +7,7 @@ SQL_PASSWORD = os.getenv("SQL_CONNECTION_PW")
 
 connection = sqlc.connect(
     user = "root",
-    host = "localhost",
+    host = os.getenv("SQL_HOST", "localhost"),
     database = "stockdb",
     passwd = SQL_PASSWORD
 )
