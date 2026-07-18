@@ -1,5 +1,5 @@
-import repository.company_repository as company
-import repository.company_identifiers_repository  as company_identifier
+import repository.companies_repository as company
+import repository.securities_repository  as company_identifier
 import repository.income_statements_repository as income
 import repository.balance_sheets_repository as balance
 import storage.local_cache as lc

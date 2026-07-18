@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
-import repository.company_repository as comp
-import repository.company_identifiers_repository as compid
+import repository.companies_repository as comp
+import repository.securities_repository as compid
 import repository.income_statements_repository as income
 import repository.balance_sheets_repository as balance
 
@@ -19,9 +19,9 @@ if ticker:
     if comp_id is not None:
         
         # Company Section
-        comp__data = comp.get_company(comp_id)
+        comp__data = comp.get_companies(comp_id)
         df_comp_data = pd.DataFrame(comp__data, columns=['Company Id', 'Name'])
-        comp_id_data = compid.get_company_identifiers(comp_id)
+        comp_id_data = compid.get_securities(comp_id)
         df_compid_data = pd.DataFrame(comp_id_data, columns=['Company Id', 'Ticker', 'ISIN', 'WKN'])
         st.subheader("Comp Identifiers Data")
         st.write(f"**Name:** {df_comp_data['Name'].iloc[0]}")

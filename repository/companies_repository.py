@@ -1,19 +1,19 @@
 import repository.sqlConnection as db
 
-def add(name: str):
+def add(name: str, cik: str):
     """
     Add a new entry to abstract company database table
     name: Field for long name of company
     """
-    db.cursor.execute(f"INSERT INTO company (name) VALUES (%s);", (name,))
+    db.cursor.execute(f"INSERT INTO companies (name) VALUES (%s, %s);", (name, cik))
     db.connection.commit()
 
 
-def get_company(company_id: int):
+def get_companies(company_id: int):
     db.connection.commit()
     
     sql = """
-            SELECT * FROM company WHERE id = %s;
+            SELECT * FROM companies WHERE id = %s;
         """
     
     db.cursor.execute(sql, (company_id,))
