@@ -20,9 +20,9 @@ if ticker:
         
         # Company Section
         comp__data = comp.get_companies(comp_id)
-        df_comp_data = pd.DataFrame(comp__data, columns=['Company Id', 'Name'])
+        df_comp_data = pd.DataFrame(comp__data, columns=['Company Id', 'Name', 'CIK'])
         comp_id_data = compid.get_securities(comp_id)
-        df_compid_data = pd.DataFrame(comp_id_data, columns=['Company Id', 'Ticker', 'ISIN', 'WKN'])
+        df_compid_data = pd.DataFrame(comp_id_data, columns=['Id', 'Company Id', 'Ticker', 'ISIN', 'WKN'])
         st.subheader("Comp Identifiers Data")
         st.write(f"**Name:** {df_comp_data['Name'].iloc[0]}")
         st.write(f"**Company Id:** {df_comp_data['Company Id'].iloc[0]}")
