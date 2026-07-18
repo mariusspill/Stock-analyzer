@@ -1,5 +1,5 @@
-import repository.companies_repository as company
-import repository.securities_repository  as company_identifier
+import repository.companies_repository as companies
+import repository.securities_repository  as securities
 import repository.income_statements_repository as income
 import repository.balance_sheets_repository as balance
 import storage.local_cache as lc
@@ -12,7 +12,7 @@ def pipeline(indices: list[str]):
 
     # Income statements pipeline
     for ticker in indices:
-        comp_id = company_identifier.get_id_by_ticker(ticker)
+        comp_id = securities.get_id_by_ticker(ticker)
         if comp_id is None:
             logger.warning(f"⚠️ {ticker} cannot be processed. Reason: Registry ID missing.")
             continue

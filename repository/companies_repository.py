@@ -19,3 +19,15 @@ def get_companies(company_id: int):
     db.cursor.execute(sql, (company_id,))
 
     return db.cursor.fetchall()
+
+
+def get_all_companies():
+    db.connection.commit()
+
+    sql = """
+        SELECT * FROM companies;
+"""
+
+    db.cursor.execute(sql,)
+
+    return db.cursor.fetchall()
