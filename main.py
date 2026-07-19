@@ -2,7 +2,10 @@ import helpers.tickers as tickers
 import threading
 import logging
 
-from pipelines.sec_tickers_api_to_json import fetch_meta_data
+import pipelines.sec_tickers_api_to_json as meta_json
+import pipelines.metadata_json_to_db as meta_db
+
+import pipelines.sec_fundamentals_api_to_json as fund_json
 
 logging.basicConfig(  
     level=logging.INFO,
@@ -12,7 +15,10 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 def mainFunction():
-    fetch_meta_data()
+    meta_json.fetch_meta_data()
+    meta_db.pipeline()
+
+    fund_json.fetch_fundamentals()
 
 def frontend():
     pass

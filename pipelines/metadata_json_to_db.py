@@ -49,5 +49,3 @@ def pipeline():
     companies_data_pipeline()
     cik_pipeline()
 
-
-pipeline()
