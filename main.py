@@ -1,4 +1,3 @@
-import helpers.tickers as tickers
 import threading
 import logging
 
@@ -6,6 +5,7 @@ import pipelines.sec_tickers_api_to_json as meta_json
 import pipelines.metadata_json_to_db as meta_db
 
 import pipelines.sec_fundamentals_api_to_json as fund_json
+import pipelines.sec_income_statements_json_to_db as income_pipe
 
 logging.basicConfig(  
     level=logging.INFO,
@@ -19,6 +19,7 @@ def mainFunction():
     meta_db.pipeline()
 
     fund_json.fetch_fundamentals()
+    income_pipe.pipeline()
 
 def frontend():
     pass
