@@ -33,6 +33,7 @@ SQL_CONNECTION_PW=<your password>
 SQL_HOST=localhost
 
 (matches the port/user defaults in `docker-compose.yml` / `repository/sqlConnection.py`)
+
 3. Apply migrations:
 
 uv run alembic upgrade head
