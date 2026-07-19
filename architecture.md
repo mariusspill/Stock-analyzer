@@ -14,15 +14,14 @@ Lookups use `quarter <=> %s` (MySQL's NULL-safe equality) since `quarter` is nul
 
 ## Ingestion pipeline chain
 
-sec_tickers_api_to_json.fetch_meta_data()       ticker list -> JSON cache (weekly staleness)
-v
-metadata_json_to_db.pipeline()                  register companies + securities, CIK-keyed
-v
-sec_fundamentals_api_to_json.fetch_fundamentals()   SEC companyfacts -> JSON cache per CIK (monthly staleness)
-v
-sec_income_statements_json_to_db.pipeline()     JSON -> income_statements
-sec_balance_sheets_json_to_db.pipeline()        JSON -> balance_sheets
-sec_cash_flow_statements_json_to_db.pipeline()  JSON -> cash_flow_statements
+1. `sec_tickers_api_to_json.fetch_meta_data()` — ticker list -> JSON cache (weekly staleness)
+2. `metadata_json_to_db.pipeline()` — registers companies + securities, CIK-keyed
+3. `sec_fundamentals_api_to_json.fetch_fundamentals()` — SEC companyfacts -> JSON cache per CIK (monthly staleness)
+4. JSON -> DB mapping (independent once step 3's cache is populated):
+   - `sec_income_statements_json_to_db.pipeline()` -> `income_statements`
+   - `sec_balance_sheets_json_to_db.pipeline()` -> `balance_sheets`
+   - `sec_cash_flow_statements_json_to_db.pipeline()` -> `cash_flow_statements`
+
 
 
 Each arrow is a real boundary: the fetch stage hits the network and caches to disk; everything downstream reads only from that local cache, never re-hits the API. This is why the fetch stage is rate-limited/slow (SEC fair-use pacing) while the JSON->DB mapping stage is fast (local disk + DB only) — they're scheduled independently.
