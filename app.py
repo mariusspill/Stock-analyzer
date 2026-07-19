@@ -23,12 +23,14 @@ if ticker:
         df_comp_data = pd.DataFrame(comp__data, columns=['Company Id', 'Name', 'CIK'])
         comp_id_data = compid.get_securities(comp_id)
         df_compid_data = pd.DataFrame(comp_id_data, columns=['Id', 'Company Id', 'Ticker', 'ISIN', 'WKN'])
+        matched = df_compid_data[df_compid_data['Ticker'] == ticker.upper()]
         st.subheader("Comp Identifiers Data")
         st.write(f"**Name:** {df_comp_data['Name'].iloc[0]}")
         st.write(f"**Company Id:** {df_comp_data['Company Id'].iloc[0]}")
-        st.write(f"**Ticker:** {df_compid_data['Ticker'].iloc[0]}")
-        st.write(f"**ISIN:** {df_compid_data['ISIN'].iloc[0]}")
-        st.write(f"**WKN:** {df_compid_data['WKN'].iloc[0]}")
+        st.write(f"**Ticker:** {matched['Ticker'].iloc[0]}")
+        st.write(f"**ISIN:** {matched['ISIN'].iloc[0]}")
+        st.write(f"**WKN:** {matched['WKN'].iloc[0]}")
+
 
 
 
@@ -38,8 +40,9 @@ if ticker:
 
         income_data = income.get_income_statements(comp_id)
         df_income_data = pd.DataFrame(income_data, columns=['Income Id', 'Company Id', 'Year', 'Revenue', 'Gross Profit',
-                                                            'Operating Income', 'Net Income', 'EBIT', 'EBITDA',
-                                                            'Cost of Revenue', 'Operating Expense', 'Interest Cost', 'Taxes', 'Checked'])
+                                                    'Operating Income', 'Net Income', 'EBIT', 'EBITDA',
+                                                    'Cost of Revenue', 'Operating Expense', 'Interest Cost', 'Taxes', 'Checked',
+                                                    'Type', 'Quarter', 'Pretax Income', 'EPS Diluted', 'Weighted Avg Diluted Shares'])
 
         full_df_income_data = df_income_data[['Year', 'Revenue', 'Gross Profit', 'Operating Income', 'Net Income', 'EBIT', 'EBITDA', 'Cost of Revenue',
                                             'Operating Expense', 'Interest Cost', 'Taxes']]
@@ -76,9 +79,10 @@ if ticker:
 
         balance_data = balance.get_balance_sheets(comp_id)
         df_balance_data = pd.DataFrame(balance_data, columns=['Balance Id', 'Company Id', 'Year', 'Type', 'Total Assets', 'Total Current Assets',
-                                                            'Cash', 'Receivables', 'Inventories', 'Properties, Plants & Equipment', 'Intangible Assets',
-                                                            'Total Liabilities and Equity', 'Short Debt', 'Long Debt', 'Total Debt', 'Total Liabilities',
-                                                            'Total Equity', 'Retained Earnings', 'Total Shares', 'Treasury Shares', 'Shares Outstanding', 'Checked'])
+                                                    'Cash', 'Receivables', 'Inventories', 'Properties, Plants & Equipment', 'Intangible Assets',
+                                                    'Total Liabilities and Equity', 'Short Debt', 'Long Debt', 'Total Debt', 'Total Liabilities',
+                                                    'Total Equity', 'Retained Earnings', 'Total Shares', 'Treasury Shares', 'Shares Outstanding', 'Checked',
+                                                    'Quarter', 'Total Current Liabilities', 'Goodwill'])
 
 
         full_df_balance_data = df_balance_data[['Year', 'Total Assets', 'Total Current Assets', 'Cash', 'Receivables',

@@ -1,25 +1,28 @@
 import repository.sqlConnection as db
 
-def exists(company_id: int, year: int):
+def exists(company_id: int, year: int, type:str, quarter: str = None):
     """Checks if a statement exists for a given year and returns its checked state."""
-    sql = "SELECT checked FROM income_statements WHERE company_id = %s AND year = %s;"
-    db.cursor.execute(sql, (company_id, year))
+    sql = "SELECT checked FROM income_statements WHERE company_id = %s AND year = %s AND type = %s AND quarter <=> %s;"
+    db.cursor.execute(sql, (company_id, year, type, quarter))
     return db.cursor.fetchone() # Returns (checked,) or None
 
-def add_entry_income_statement(
-        company_id: int, year: int, 
-        data: dict):
+def add_entry_income_statement(data: dict,
+        company_id: int, year: int, type: str, quarter: str = None,
+        ):
     
     """
     Inserts a new record.
     """
-    sql = """INSERT INTO income_statements (company_id, year, revenue, gross_profit,
-                   operating_income, net_income, EBIT, EBITDA, cost_of_revenue, operating_expense, interest_cost, taxes) VALUES 
-                   (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s) """
+    sql = """INSERT INTO income_statements (company_id, year ,type, quarter, revenue, gross_profit,
+                   operating_income, net_income, EBIT, EBITDA, cost_of_revenue, operating_expense, interest_cost, taxes,
+                   pretax_income, eps_diluted, weighted_avg_diluted_shares) VALUES 
+                   (%s,%s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s) """
     
     params = (
         company_id,
         year,
+        type,
+        quarter,
         data['revenue'],
         data['gross_profit'],   
         data['operating_income'],
@@ -29,7 +32,10 @@ def add_entry_income_statement(
         data['cost_of_revenue'],
         data['operating_expense'],
         data['interest_cost'],
-        data['taxes']
+        data['taxes'],
+        data['pretax_income'], 
+        data['eps_diluted'], 
+        data['weighted_avg_diluted_shares']
     )
 
     db.cursor.execute(sql, params)

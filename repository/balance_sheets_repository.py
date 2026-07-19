@@ -1,40 +1,46 @@
 import repository.sqlConnection as db
 
-def add_entry_balance_sheets(company_id: int, year: int, type: str, total_assets: int = None, total_current_assets: int = None, cash: int = None, receivables: int = None,
-                             inventories: int = None, ppn: int = None, intangibles: int = None, total_liabilities_equity: int = None, short_debt: int = None, long_debt: int = None,
-                             total_debt: int = None, total_liabilities: int = None, total_equity: int = None, retained_earnings: int = None, total_shares: int = None,
-                             treasury_shares: int = None, shares_outstanding: int = None):
+def exists(company_id: int, year: int, type: str, quarter: str = None):
+    """Checks if a balance sheet exists for a given period and returns its checked state."""
+    sql = "SELECT checked FROM balance_sheets WHERE company_id = %s AND year = %s AND type = %s AND quarter <=> %s;"
+    db.cursor.execute(sql, (company_id, year, type, quarter))
+    return db.cursor.fetchone()
+
+def add_entry_balance_sheets(data: dict, company_id: int, year: int, type: str, quarter: str = None):
     """
     Add a new entry to balance_sheets database table
     """
 
-    sql = """INSERT INTO balance_sheets (company_id, year, type, total_assets, total_current_assets, cash, receivables, 
+    sql = """INSERT INTO balance_sheets (company_id, year, type, quarter, total_assets, total_current_assets, cash, receivables, 
                 inventories, properties_plant_equipment, intangible_assets, total_liabilities_and_equity, 
                 short_debt, long_debt, total_debt, total_liabilities, total_equity, retained_earnings, 
-                total_shares, treasury_shares, shares_outstanding) VALUES 
-                (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+                total_shares, treasury_shares, shares_outstanding, total_current_liabilities, goodwill) VALUES 
+                (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
     
     params = (
         company_id,
         year,
         type,
-        total_assets,
-        total_current_assets,
-        cash,
-        receivables,
-        inventories,
-        ppn,
-        intangibles,
-        total_liabilities_equity,
-        short_debt,
-        long_debt,
-        total_debt,
-        total_liabilities,
-        total_equity,
-        retained_earnings,
-        total_shares,
-        treasury_shares,
-        shares_outstanding
+        quarter,
+        data['total_assets'],
+        data['total_current_assets'],
+        data['cash'],
+        data['receivables'],
+        data['inventories'],
+        data['ppn'],
+        data['intangibles'],
+        data['total_liabilities_equity'],
+        data['short_debt'],
+        data['long_debt'],
+        data['total_debt'],
+        data['total_liabilities'],
+        data['total_equity'],
+        data['retained_earnings'],
+        data['total_shares'],
+        data['treasury_shares'],
+        data['shares_outstanding'],
+        data['total_current_liabilities'],
+        data['goodwill']
     )
     db.cursor.execute(sql, params)
     db.connection.commit()
