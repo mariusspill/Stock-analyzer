@@ -45,6 +45,31 @@ def add_entry_balance_sheets(data: dict, company_id: int, year: int, type: str, 
     db.cursor.execute(sql, params)
     db.connection.commit()
 
+
+def update_entry_balance_sheets(data: dict, company_id: int, year: int, type: str, quarter: str = None):
+    """
+    Updates an existing balance sheet record with fresh data. Only call this when checked = 0.
+    """
+    sql = """UPDATE balance_sheets SET total_assets = %s, total_current_assets = %s, cash = %s, receivables = %s,
+                inventories = %s, properties_plant_equipment = %s, intangible_assets = %s, total_liabilities_and_equity = %s,
+                short_debt = %s, long_debt = %s, total_debt = %s, total_liabilities = %s, total_equity = %s,
+                retained_earnings = %s, total_shares = %s, treasury_shares = %s, shares_outstanding = %s,
+                total_current_liabilities = %s, goodwill = %s
+             WHERE company_id = %s AND year = %s AND type = %s AND quarter <=> %s AND checked != 1"""
+
+    params = (
+        data['total_assets'], data['total_current_assets'], data['cash'], data['receivables'],
+        data['inventories'], data['ppn'], data['intangibles'], data['total_liabilities_equity'],
+        data['short_debt'], data['long_debt'], data['total_debt'], data['total_liabilities'],
+        data['total_equity'], data['retained_earnings'], data['total_shares'],
+        data['treasury_shares'], data['shares_outstanding'],
+        data['total_current_liabilities'], data['goodwill'],
+        company_id, year, type, quarter
+    )
+
+    db.cursor.execute(sql, params)
+    db.connection.commit()
+
 def get_balance_sheets(company_id: int):
     db.connection.commit()
 
