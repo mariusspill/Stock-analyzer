@@ -8,6 +8,7 @@ import pipelines.sec_fundamentals_api_to_json as fund_json
 import pipelines.sec_income_statements_json_to_db as income_pipe
 import pipelines.sec_balance_sheets_json_to_db as balance_pipe
 import pipelines.sec_cash_flow_statements_json_to_db as cash_pipe
+import pipelines.history_api_to_parquet as hist_parq
 
 logging.basicConfig(  
     level=logging.INFO,
@@ -22,8 +23,9 @@ def mainFunction():
 
     # fund_json.fetch_fundamentals()
     # income_pipe.pipeline()
-    balance_pipe.pipeline()
-    cash_pipe.pipeline()
+    # balance_pipe.pipeline()
+    # cash_pipe.pipeline()
+    hist_parq.fetch_history()
 
 def frontend():
     pass

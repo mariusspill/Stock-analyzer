@@ -32,3 +32,14 @@ def get_securities(company_id: int):
     db.cursor.execute(sql, (company_id,))
 
     return db.cursor.fetchall()
+
+def get_all_securities():
+    db.connection.commit()
+
+    sql = """
+        SELECT * FROM securities;
+"""
+
+    db.cursor.execute(sql,)
+
+    return db.cursor.fetchall()
