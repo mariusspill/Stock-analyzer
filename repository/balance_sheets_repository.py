@@ -1,5 +1,6 @@
 import repository.sqlConnection as db
 
+
 def exists(company_id: int, year: int, type: str, quarter: str = None):
     """Checks if a balance sheet exists for a given period and returns its checked state."""
     sql = "SELECT checked FROM balance_sheets WHERE company_id = %s AND year = %s AND type = %s AND quarter <=> %s;"

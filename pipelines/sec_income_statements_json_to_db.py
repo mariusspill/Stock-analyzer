@@ -1,8 +1,9 @@
+import logging
+
+import pipelines.xbrl_utils as xbrl
 import repository.companies_repository as companies
 import repository.income_statements_repository as incomes
 import storage.sec_fundamentals_cache as sfc
-import logging
-import pipelines.xbrl_utils as xbrl
 
 logger = logging.getLogger(__name__)
 

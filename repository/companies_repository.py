@@ -1,11 +1,12 @@
 import repository.sqlConnection as db
 
+
 def add(name: str, cik: str):
     """
     Add a new entry to abstract company database table
     name: Field for long name of company
     """
-    db.cursor.execute(f"INSERT INTO companies (name, cik) VALUES (%s, %s);", (name, cik))
+    db.cursor.execute("INSERT INTO companies (name, cik) VALUES (%s, %s);", (name, cik))
     db.connection.commit()
     return db.cursor.lastrowid
 

@@ -1,9 +1,10 @@
-import streamlit as st
 import pandas as pd
-import repository.companies_repository as comp
-import repository.securities_repository as compid
-import repository.income_statements_repository as income
+import streamlit as st
+
 import repository.balance_sheets_repository as balance
+import repository.companies_repository as comp
+import repository.income_statements_repository as income
+import repository.securities_repository as compid
 
 st.set_page_config(page_title="StockPlatform", layout="wide")
 st.title("Company Financials")

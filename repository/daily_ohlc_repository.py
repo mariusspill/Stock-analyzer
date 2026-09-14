@@ -1,8 +1,10 @@
 from dataclasses import dataclass
 from datetime import date
 
-import repository.sql_alchemy_connection as db
 import sqlalchemy as sa
+
+import repository.sql_alchemy_connection as db
+
 
 class DailyOhlc(db.Base):
     __tablename__ = "daily_ohlc"

@@ -1,5 +1,5 @@
-from pandas import DataFrame
 import yfinance as yf
+from pandas import DataFrame
 
 
 def fetch_history(ticker: str, start: str, end: str) -> DataFrame:

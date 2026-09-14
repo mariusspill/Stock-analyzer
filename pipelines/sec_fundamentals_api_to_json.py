@@ -1,8 +1,9 @@
 import logging
 import time
-from storage.sec_fundamentals_cache import *
-from apis.sec import *
+
 import repository.companies_repository as companies
+from apis.sec import *
+from storage.sec_fundamentals_cache import *
 
 logger = logging.getLogger(__name__)
 

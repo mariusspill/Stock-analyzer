@@ -1,8 +1,9 @@
-import repository.companies_repository as companies
-import repository.cash_flow_statements_repository as cash_flows
-import storage.sec_fundamentals_cache as sfc
 import logging
+
 import pipelines.xbrl_utils as xbrl
+import repository.cash_flow_statements_repository as cash_flows
+import repository.companies_repository as companies
+import storage.sec_fundamentals_cache as sfc
 
 logger = logging.getLogger(__name__)
 

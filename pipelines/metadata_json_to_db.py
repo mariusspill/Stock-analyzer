@@ -1,8 +1,8 @@
-import repository.companies_repository as companies
-import repository.securities_repository  as securities
-import storage.sec_local_cache as slc
-import json
 import logging
+
+import repository.companies_repository as companies
+import repository.securities_repository as securities
+import storage.sec_local_cache as slc
 
 logger = logging.getLogger(__name__)
 

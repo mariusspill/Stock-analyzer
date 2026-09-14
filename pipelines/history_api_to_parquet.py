@@ -1,10 +1,11 @@
-from datetime import datetime
-import time
 import logging
 import os
-import storage.yfinance_history as storage_history
+import time
+from datetime import datetime
+
 import apis.yfinance as apiyf
 import repository.securities_repository as securities
+import storage.yfinance_history as storage_history
 
 DJIA_TICKERS = {
     "AAPL", "AMGN", "AMZN", "AXP", "BA", "CAT", "CRM", "CSCO", "CVX",

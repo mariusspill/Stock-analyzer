@@ -1,10 +1,9 @@
-import os
-import json
 import glob
-import pandas as pd
+import os
 from datetime import date
-from datetime import datetime, timedelta
 from pathlib import Path
+
+import pandas as pd
 
 RAW_DATA_PATH = Path(__file__).resolve().parent.parent / "Data" / "Histories"
 

@@ -1,5 +1,6 @@
 import repository.sqlConnection as db
 
+
 def add_entry_securities(id: int, ticker: str, isin: str, wkn: str):
     """
     Add a new entry to securities database table
