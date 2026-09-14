@@ -1,28 +1,20 @@
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-
 from alembic import context
+from sqlalchemy import engine_from_config, pool
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 
-import os 
-from dotenv import load_dotenv
-from sqlalchemy.engine import URL
+import repository.db_config as db_config
 
-load_dotenv()
-db_url = URL.create(
-    "mysql+mysqlconnector",
-    username="root",
-    password=os.getenv("SQL_CONNECTION_PW"),
-    host=os.getenv("SQL_HOST", "localhost"),
-    database="stockdb",
-
+# The URL in alembic.ini is a placeholder; the real target comes from the
+# environment so migrations run unchanged against a native MySQL or a container.
+config.set_main_option(
+    "sqlalchemy.url",
+    db_config.sqlalchemy_url().render_as_string(hide_password=False),
 )
-config.set_main_option("sqlalchemy.url", db_url.render_as_string(hide_password=False))
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
