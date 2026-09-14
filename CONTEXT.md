@@ -47,6 +47,11 @@ learning
   tracked ticker-list file selected by the `UNIVERSE` env var — never inferred
   from what is already on disk, since a pipeline that fetches only what it
   already has can never grow.
+- **Priority is multi-machine database sync** (2026-09-15). The user will be
+  travelling with limited access to the desktop. The database must move between
+  machines the way code does, so that work done on a laptop is not lost and
+  there is never more than one dataset. A laptop cannot host the 13 GB lake, so
+  the database has to carry everything that matters.
 - **Planning lives in GitHub**, not in the repo. Milestones and issues are the
   source of truth for what is planned and in progress; this file holds rolling
   state; `ARCHITECTURE.md` holds coarse direction not yet ready to be an issue.
@@ -59,10 +64,13 @@ learning
   dump/restore scripts that never pass through a host shell, `pandas`/`pyarrow`
   promoted to declared dependencies, first tests, LF line endings and exec bits
   forced so scripts survive a Windows checkout into a Linux container.
-- **Database migration into Docker (in progress).** Images build. The native
-  MySQL on :3306 has been exported to a 21 MB gzipped dump — ASCII, all 9 tables
-  in the current schema, `alembic_version` at head. Restore and row-count
-  verification still outstanding.
+- **Database migrated into Docker.** The native MySQL on :3306 was exported,
+  restored into the container on :3307, and verified: 200,122 / 197,892 /
+  197,513 rows in the three statement tables, 8,027 companies, 10,442
+  securities, and all 82 `checked = 1` rows intact — counts identical on both
+  sides. `alembic current` reports head, so there is no migration drift. `.env`
+  now points at the container and host-side code reaches it. Retiring the native
+  service is #2 and still open.
 
 ## Build & Verification Commands
 
@@ -91,11 +99,37 @@ docker compose run --rm pipeline python main.py
 Tracked in [GitHub milestones](https://github.com/mariusspill/Stock-analyzer/milestones).
 Currently in flight:
 
-1. **#1** — restore `backups/native_import_*.sql.gz` and verify row counts, and
-   especially `checked=1` counts, match the native database.
-2. **#2** — point `.env` at the container (`SQL_HOST=localhost`,
-   `SQL_PORT=3307`) and retire the native MySQL install.
-3. **#5–#7** — the universe work, once the database migration is closed out.
+In priority order:
+
+1. **#8** — how the database dump travels between machines. This is the point of
+   the whole exercise; everything else is subordinate to it. **Blocked on an
+   unresolved design question, below.**
+2. **#11** — load parquet prices into `daily_ohlc`. Reclassified as a
+   prerequisite, not a nice-to-have: prices exist only in the lake, the lake does
+   not travel, so without this a second machine has no price data at all.
+3. **#2** — finish retiring the native MySQL (`.env` is already switched; what
+   remains is stopping the Windows service and confirming nothing breaks).
+4. **#5–#7** — the universe work. Lower priority now; it scopes *cache warming*,
+   which matters less once the database carries everything.
+
+### Open design question blocking #8
+
+"The database travels like git" breaks down the moment two machines both write.
+A SQL dump is an opaque blob — git cannot merge two divergent databases, so if
+pipelines run on the laptop *and* the desktop, one side's work is silently lost.
+That is precisely the outcome the priority above exists to prevent, so it has to
+be answered before building the sync.
+
+Three shapes, not yet decided:
+
+- **Single-writer discipline.** Dump-sync as planned, plus a rule that only one
+  machine ingests at a time. Free and simple; enforced by humans, so it will
+  eventually be violated.
+- **One hosted database both machines connect to.** No sync, no dumps, no
+  conflicts — `SQL_HOST` already makes this a config change rather than a code
+  change. Costs money and needs network access while travelling.
+- **Append-only reconciliation.** Merge by re-deriving rather than replacing.
+  Most robust, by far the most work, and the `checked = 1` rows complicate it.
 
 ## Revisit later
 
