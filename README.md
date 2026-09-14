@@ -23,27 +23,61 @@ Short version: `tickers -> companies/securities registration -> SEC companyfacts
 
 ## Running it
 
-1. Start the database:
+Docker is the only thing you need installed. Python, `uv` and MySQL all live
+inside the containers.
 
-docker compose up -d db
+```bash
+git clone git@github.com:mariusspill/StockScreener.git
+cd StockScreener
 
-2. Create a `.env` file at the repo root with at least:
+cp .env.example .env          # then set SQL_CONNECTION_PW
+docker compose build
+docker compose up -d app      # starts MySQL, waits for it, migrates, then serves
+```
 
-SQL_CONNECTION_PW=<your password>
-SQL_HOST=localhost
+The frontend is then on <http://localhost:8502>. The database is published on
+`localhost:3307` — not 3306, so it cannot collide with a native MySQL install.
 
-(matches the port/user defaults in `docker-compose.yml` / `repository/sqlConnection.py`)
+Run a pipeline:
 
-3. Apply migrations:
+```bash
+docker compose run --rm pipeline python main.py
+```
 
-uv run alembic upgrade head
+Tests and linting (also containerised, so they use the locked dependencies):
 
-4. Run the ingestion chain:
-uv run python main.py
+```bash
+./scripts/test.sh
+./scripts/lint.sh
+```
 
-5. Launch the frontend:
-uv run streamlit run app.py
+### Moving the database between machines
 
+The database is the source of truth for ingested data, so it travels as a dump
+rather than being regenerated. Both scripts run `mysqldump`/`mysql` *inside* the
+db container and write into the mounted `backups/` directory — no host MySQL
+client is needed, and the output never passes through a host shell.
+
+```bash
+./scripts/db_dump.sh                      # -> backups/stockdb_<timestamp>.sql.gz
+./scripts/db_restore.sh                   # restore the newest dump (destructive)
+./scripts/db_restore.sh backups/x.sql.gz  # or a specific one
+```
+
+If you are coming from a native MySQL install on this host, import it once:
+
+```bash
+./scripts/db_import_native.sh
+```
+
+Note that `Data/` (the raw JSON/parquet lake, ~13 GB) is not in git and is not
+yet synced automatically — see `docs/ROADMAP.md` M3.
+
+### Running against a native MySQL instead
+
+Set `SQL_HOST`/`SQL_PORT` in `.env` to point wherever you like and run on the
+host with `uv run streamlit run app.py`. Nothing about the connection is
+hardcoded.
 
 ## Status
 
