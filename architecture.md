@@ -60,9 +60,37 @@ Run the full chain via `main.py`, or any pipeline module standalone via `python 
 
 - `total_debt` has no direct XBRL tag anywhere — always derived as `short_debt + long_debt`.
 - Dividend/capex figures are stored as SEC reports them (`PaymentsOfDividendsCommonStock`, `PaymentsToAcquirePropertyPlantAndEquipment` — both positive numbers representing cash outflows), not sign-flipped to negative.
-- No automated test suite yet for the repository layer or tag-mapping logic — correctness is currently verified by manual spot-checks against real 10-Ks (see e.g. the IBM/Gap Inc./ASC 842 lease-reclassification investigations that shaped several of the derivation-fallback decisions above).
+- The tag-mapping logic has no automated tests — correctness is verified by manual spot-checks against real 10-Ks (see e.g. the IBM/Gap Inc./ASC 842 lease-reclassification investigations that shaped several of the derivation-fallback decisions above). `tests/` currently covers only connection configuration and the lazy-import behaviour, not any data logic.
 - Balance sheet / cash flow field priority lists have had less real-world validation than income statements so far — worth spot-checking more companies as the full backfill runs.
 
 ## Roadmap (not yet built)
 
-Daily OHLC prices (yfinance) -> dbt derived metrics (P/E TTM, 3yr avg P/E, ROE) -> Airflow orchestration of the full chain. Sequenced in that order because P/E-based metrics need price data that doesn't exist yet, and orchestrating unfinished pipelines makes debugging harder, not easier.
+Tracked, actionable work lives in [GitHub milestones and
+issues](https://github.com/mariusspill/Stock-analyzer/milestones). What follows
+is the coarser direction that isn't ready to be an issue yet — deliberately
+prose, because turning vague intentions into tickets just produces stale tickets.
+
+Daily OHLC prices (yfinance) -> dbt derived metrics (P/E TTM, 3yr avg P/E, ROE)
+-> Airflow orchestration of the full chain. Sequenced in that order because
+P/E-based metrics need price data that doesn't exist yet, and orchestrating
+unfinished pipelines makes debugging harder, not easier. The price pipeline
+currently stops at parquet; nothing loads it into `daily_ohlc` yet, even though
+the table exists.
+
+**Is the warehouse actually rebuildable from the lake?** This document claims it
+is, and nothing tests that claim. The known counterexample is the `checked = 1`
+rows, which were researched by hand and which no pipeline can regenerate — which
+is exactly why the database, not the lake, is the source of truth for ingested
+data. Rebuilding into a scratch database and diffing against the real one would
+show what *else* differs. Worth doing before trusting any "just re-run the
+pipelines" recovery story.
+
+**Point-in-time correctness.** `storage/sec_fundamentals_cache.py` deletes the
+previous snapshot when it writes a new one, so the lake holds the latest SEC
+response rather than an archive of what was filed when. That makes it a cache of
+a re-callable API — which is why it is warmed on demand rather than synced
+between machines. The cost is that a company restating its filings makes the
+number currently in the database unreproducible. If backtesting ever needs to
+know what a filing said *as of* a past date, the raw layer has to become
+append-only instead of replace-on-write. That is a real schema and storage
+decision, not a small one.

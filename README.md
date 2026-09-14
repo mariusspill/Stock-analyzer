@@ -27,8 +27,8 @@ Docker is the only thing you need installed. Python, `uv` and MySQL all live
 inside the containers.
 
 ```bash
-git clone git@github.com:mariusspill/StockScreener.git
-cd StockScreener
+git clone git@github.com:mariusspill/Stock-analyzer.git
+cd Stock-analyzer
 
 cp .env.example .env          # then set SQL_CONNECTION_PW
 docker compose build
@@ -70,8 +70,14 @@ If you are coming from a native MySQL install on this host, import it once:
 ./scripts/db_import_native.sh
 ```
 
-Note that `Data/` (the raw JSON/parquet lake, ~13 GB) is not in git and is not
-yet synced automatically — see `docs/ROADMAP.md` M3.
+`Data/` (the raw JSON/parquet lake, ~13 GB) is deliberately **not** synced
+between machines. It is a cache of SEC's API, not an archive — the fundamentals
+cache overwrites each company's previous snapshot anyway — so a new machine
+warms it on demand rather than copying it.
+
+Today only the price pipeline can be scoped, via `FETCH_UNIVERSE=djia`.
+Scoping every stage to a declared ticker universe is
+[issue #5](https://github.com/mariusspill/Stock-analyzer/issues/5).
 
 ### Running against a native MySQL instead
 
@@ -81,7 +87,7 @@ hardcoded.
 
 ## Status
 
-Actively in development. Fundamentals ingestion (tickers -> companies/securities -> SEC XBRL mapping for all three statement types) is functional. Daily price ingestion, dbt-based derived metrics (P/E TTM, ROE, etc.), and Airflow orchestration are planned next — see [ARCHITECTURE.md](ARCHITECTURE.md#roadmap-not-yet-built) for sequencing and reasoning.
+Actively in development. Fundamentals ingestion (tickers -> companies/securities -> SEC XBRL mapping for all three statement types) is functional. Daily price ingestion, dbt-based derived metrics (P/E TTM, ROE, etc.), and Airflow orchestration are planned next — see [ARCHITECTURE.md](ARCHITECTURE.md#roadmap-not-yet-built) for sequencing and reasoning, and the [GitHub milestones](https://github.com/mariusspill/Stock-analyzer/milestones) for tracked work.
 
 ## Disclaimer
 
