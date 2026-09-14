@@ -1,4 +1,13 @@
-.venv/
 .git/
+.venv/
 .env
+__pycache__/
+*.pyc
+
+# The raw data lake is bind-mounted at runtime, never baked into the image.
 Data/
+backups/
+
+# Docs and scratch files have no business in the build context.
+docs/
+*.md

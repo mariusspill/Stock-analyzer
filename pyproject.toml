@@ -5,9 +5,46 @@ requires-python = ">=3.13"
 dependencies = [
     "alembic>=1.18.5",
     "mysql-connector-python==9.7.0",
+    # pandas and pyarrow are imported directly by storage/yfinance_history.py.
+    # They used to arrive only as transitive dependencies of streamlit/yfinance,
+    # which meant an unrelated upgrade could have removed them without warning.
+    "pandas>=2.2",
+    "pyarrow>=17",
     "python-dotenv==1.2.2",
     "requests==2.34.2",
     "sqlalchemy>=2.0.51",
     "streamlit>=1.59.1",
     "yfinance==1.3.0",
 ]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "ruff>=0.9",
+]
+
+[tool.uv]
+# This repo is an application, not an installable library: there is nothing to
+# build, so uv should only manage the environment.
+package = false
+
+[tool.ruff]
+target-version = "py313"
+# Generated migration scripts are Alembic's output, not hand-written code.
+exclude = ["migrations/versions"]
+
+[tool.ruff.lint]
+# Pinned explicitly rather than relying on ruff's defaults, so the result is the
+# same here, in the container and in CI. Widen this deliberately, not by upgrade.
+select = ["E4", "E7", "E9", "F", "I"]
+
+[tool.ruff.lint.per-file-ignores]
+# main.py imports every pipeline stage on purpose: the stages are commented in
+# and out by hand to choose what a run does, so "unused" imports are the menu.
+"main.py" = ["F401"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# The project is not an installed package, so put the repo root on sys.path
+# to let tests import `repository`, `pipelines`, etc.
+pythonpath = ["."]
