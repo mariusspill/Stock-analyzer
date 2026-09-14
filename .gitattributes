@@ -1,0 +1,20 @@
+# Check every text file out with LF, on every platform.
+#
+# Git on Windows defaults to converting LF to CRLF on checkout. A shell script
+# with CRLF line endings fails inside a Linux container with "bad interpreter:
+# no such file or directory", because the \r becomes part of the shebang path.
+# Since scripts/ runs in containers, that default has to be overridden here
+# rather than left to each machine's git config.
+* text=auto eol=lf
+
+*.sh   text eol=lf
+*.py   text eol=lf
+*.yml  text eol=lf
+*.toml text eol=lf
+*.ini  text eol=lf
+*.md   text eol=lf
+
+uv.lock text eol=lf
+
+*.parquet binary
+*.gz      binary
