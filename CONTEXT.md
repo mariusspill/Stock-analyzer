@@ -112,6 +112,15 @@ In priority order:
 4. **#5–#7** — the universe work. Lower priority now; it scopes *cache warming*,
    which matters less once the database carries everything.
 
+### Start the next session here
+
+Before picking up any issue, walk the repo together and rebuild a shared mental
+model of where things stand — the user asked for this explicitly (2026-09-15).
+Then plan sequencing. Two things are already known to want attention early:
+**#12** (a laptop must not be able to trigger a lake rebuild — currently it can,
+by default) and **#13** (find out what actually works end to end before building
+more).
+
 ### Open design question blocking #8
 
 "The database travels like git" breaks down the moment two machines both write.
